@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const {
+  createInvoice,
+  getInvoices
+} = require('../controllers/invoices.controller');
 
-// Example route
-router.get('/', (req, res) => {
-  res.send('Invoice route is working');
-});
+router.post('/', createInvoice);
+router.get('/', getInvoices);
 
 module.exports = router;

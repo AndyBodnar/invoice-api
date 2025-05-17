@@ -20,4 +20,4 @@ app.use('/api/stripe-webhook', webhookRoutes);
 app.get('/', (req, res) => res.send('Invoice API is alive cuhh'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🔥 Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`✅ API running on port ${PORT}`));
