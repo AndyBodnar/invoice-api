@@ -11,11 +11,35 @@ exports.createInvoice = async (req, res) => {
     const invoiceCount = await prisma.invoice.count();
     const invoiceNo = `INV-${String(invoiceCount + 1).padStart(3, '0')}`;
 
-    // Create invoice with auto-generated invoiceNo
+    // Destructure with defaults
+    const {
+      clientId,
+      amount,
+      status,
+      dueDate,
+      stripeId,
+      subtotal,
+      taxRate,
+      discount,
+      total,
+      lineItems = [] // default fallback to prevent Prisma crash
+    } = req.body;
+
+    // Create invoice
     const invoice = await prisma.invoice.create({
       data: {
-        ...req.body,
+        clientId,
+        amount,
+        status,
+        dueDate,
+        stripeId: stripeId || null,
+        pdfUrl: null,
+        lineItems,
         invoiceNo,
+        subtotal: subtotal || 0,
+        taxRate: taxRate || 0,
+        discount: discount || 0,
+        total: total || 0
       },
     });
 
@@ -24,7 +48,7 @@ exports.createInvoice = async (req, res) => {
       where: { id: invoice.clientId },
     });
 
-    // Generate HTML from template
+    // Generate invoice HTML
     const html = generateInvoiceHTML({ client, invoice });
 
     // Render PDF with Puppeteer
