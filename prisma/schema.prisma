@@ -10,7 +10,7 @@ datasource db {
 model Client {
   id        String   @id @default(uuid())
   name      String
-  email     String
+  email     String?
   phone     String?
   invoices  Invoice[]
   createdAt DateTime @default(now())
