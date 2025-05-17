@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core'); // ⬅️ using puppeteer-core
 const generateInvoiceHTML = require('../templates/invoice.template');
 
 exports.createInvoice = async (req, res) => {
@@ -54,8 +54,13 @@ exports.createInvoice = async (req, res) => {
     // Generate invoice HTML
     const html = generateInvoiceHTML({ client, invoice });
 
-    // Render PDF with Puppeteer
-    const browser = await puppeteer.launch({ headless: 'new' });
+    // Render PDF with Puppeteer-Core and system Chromium
+    const browser = await puppeteer.launch({
+      headless: true,
+      executablePath: '/usr/bin/chromium',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
     const page = await browser.newPage();
     await page.setContent(html);
     const pdfPath = path.resolve(`invoices/invoice-${invoice.id}.pdf`);
