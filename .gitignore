@@ -1,0 +1,8 @@
+# Ignore environment config
+.env
+
+# Ignore node_modules
+node_modules/
+
+# Prisma build cache
+.prisma/
