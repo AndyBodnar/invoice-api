@@ -29,6 +29,6 @@ model Invoice {
   pdfUrl        String?
   stripeLink    String?
   paymentStatus String   @default("draft")
-  dueDate       DateTime?
+  dueDate DateTime
   createdAt     DateTime @default(now())
 }
