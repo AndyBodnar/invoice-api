@@ -14,32 +14,35 @@ exports.createInvoice = async (req, res) => {
     // Destructure with defaults
     const {
       clientId,
-      amount,
-      status,
+      paymentStatus,
       dueDate,
       stripeId,
       subtotal,
       taxRate,
       discount,
       total,
-      lineItems = [] // default fallback to prevent Prisma crash
+      lineItems = []
     } = req.body;
+
+    // Validate required fields
+    if (!clientId || !dueDate || subtotal === undefined || total === undefined) {
+      return res.status(400).json({ error: 'Missing required invoice fields' });
+    }
 
     // Create invoice
     const invoice = await prisma.invoice.create({
       data: {
         clientId,
-        amount,
-        status,
+        paymentStatus: paymentStatus || 'draft',
         dueDate,
         stripeId: stripeId || null,
         pdfUrl: null,
         lineItems,
         invoiceNo,
-        subtotal: subtotal || 0,
+        subtotal,
         taxRate: taxRate || 0,
         discount: discount || 0,
-        total: total || 0
+        total
       },
     });
 
