@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
-// Make sure the folder is "controllers", not "controller"
-const { createClient } = require('../controllers/clients.controller');
+const {
+  createClient,
+  getClients
+} = require('../controllers/clients.controller');
 
 router.post('/', createClient);
+router.get('/', getClients);
 
 module.exports = router;
