@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-// Load env variables
+// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -13,21 +13,21 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// === Serve static PDFs ===
-app.use('/static/invoices', express.static(path.resolve('invoices')));
+// === Serve static PDF directory ===
+app.use('/static/invoices', express.static(path.join(__dirname, '../invoices'))); // More reliable path resolution
 
 // === Routes ===
-const clientRoutes = require('./routes/clients.routes');
-const invoiceRoutes = require('./routes/invoices.routes');
-const webhookRoutes = require('./routes/webhooks.routes');
+app.use('/api/clients', require('./routes/clients.routes'));
+app.use('/api/invoices', require('./routes/invoices.routes'));
+app.use('/api/stripe-webhook', require('./routes/webhooks.routes'));
 
-app.use('/api/clients', clientRoutes);
-app.use('/api/invoices', invoiceRoutes);
-app.use('/api/stripe-webhook', webhookRoutes);
-
-// === Root health check ===
-app.get('/', (req, res) => res.send('🧾 Invoice API is alive, cuhh!'));
+// === Root Endpoint (Health check) ===
+app.get('/', (_req, res) => {
+  res.send('🧾 Invoice API is alive, cuhh!');
+});
 
 // === Start server ===
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`✅ API running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ API running on http://localhost:${PORT}`);
+});
