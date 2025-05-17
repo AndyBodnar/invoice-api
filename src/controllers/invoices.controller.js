@@ -1,20 +1,53 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const fs = require('fs');
+const path = require('path');
+const puppeteer = require('puppeteer');
+const generateInvoiceHTML = require('../templates/invoice.template');
 
-// Create new invoice
 exports.createInvoice = async (req, res) => {
   try {
+    // Count existing invoices to generate invoiceNo
+    const invoiceCount = await prisma.invoice.count();
+    const invoiceNo = `INV-${String(invoiceCount + 1).padStart(3, '0')}`;
+
+    // Create invoice with auto-generated invoiceNo
     const invoice = await prisma.invoice.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        invoiceNo,
+      },
     });
-    res.status(201).json(invoice);
+
+    // Fetch client info
+    const client = await prisma.client.findUnique({
+      where: { id: invoice.clientId },
+    });
+
+    // Generate HTML from template
+    const html = generateInvoiceHTML({ client, invoice });
+
+    // Render PDF with Puppeteer
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
+    await page.setContent(html);
+    const pdfPath = path.resolve(`invoices/invoice-${invoice.id}.pdf`);
+    await page.pdf({ path: pdfPath, format: 'A4' });
+    await browser.close();
+
+    // Update invoice with PDF path
+    const updatedInvoice = await prisma.invoice.update({
+      where: { id: invoice.id },
+      data: { pdfUrl: pdfPath },
+    });
+
+    res.status(201).json(updatedInvoice);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get all invoices
 exports.getInvoices = async (req, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
