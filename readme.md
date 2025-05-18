@@ -1,10 +1,10 @@
-# 💾 Bespoke Invoice API
+# Bespoke Invoice API
 
 A Node.js + Express backend API for handling user/client management, Stripe-based invoicing, and automated communication via email and SMS. Built for the Bespoke Seating Company platform.
 
 ---
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 * Node.js + Express
 * PostgreSQL + Prisma ORM
@@ -16,7 +16,7 @@ A Node.js + Express backend API for handling user/client management, Stripe-base
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 invoice-api/
@@ -75,7 +75,7 @@ Runs on `http://localhost:10000`
 
 ---
 
-## 📦 API Endpoints
+## API Endpoints
 
 | Method | Route                 | Description            |
 | ------ | --------------------- | ---------------------- |
@@ -86,7 +86,7 @@ Runs on `http://localhost:10000`
 
 ---
 
-## ☑️ Deployment (Render)
+## Deployment (Render)
 
 * Create a new Web Service on [Render](https://render.com)
 * Connect GitHub repo
@@ -110,7 +110,7 @@ Runs on `http://localhost:10000`
 
 ---
 
-## 👤 Author
+##  Author
 
 **Andy Bodnar**
 Bespoke Seating Company
